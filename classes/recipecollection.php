@@ -53,4 +53,27 @@ class RecipeCollection
     }
     return $taggedRecipes;
   }
+
+  public function getCombinedIngredients()
+  {
+    $ingredients = array();
+    foreach ($this->recipes as $recipe) {
+      foreach ($recipe->getIngredients() as $ing) {
+        $item = $ing['item'];
+        if (strpos($item, ",")) {
+          $item = strstr($item, ",", true);
+        }
+        if (substr($item, -1) == "s" && array_key_exists(rtrim($item, "s"), $ingredients)) {
+          $item = rtirm($item, "s");
+        } elseif (array_key_exists($item . "s", $ingredients)) {
+          $item .= "s";
+        }
+        $ingredients[$item] = array(
+          $ing['amount'],
+          $ing['measure']
+        );
+      }
+    }
+    return $ingredients;
+  }
 }
